@@ -1,0 +1,23 @@
+﻿Build started 11/24/2014 7:31:13 PM.
+     1>Project "C:\Users\mid\Desktop\Mid - Portfolio\Extern\sb6\sb6.vcxproj" on node 3 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt gl3w.c
+         gl3w.c
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt sb6.cpp sb6ktx.cpp sb6object.cpp sb6shader.cpp
+         sb6shader.cpp
+         sb6object.cpp
+         sb6ktx.cpp
+         sb6.cpp
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"C:\Users\mid\Desktop\Mid - Portfolio\Lib\sb6_d32.lib" /NOLOGO Debug\gl3w.obj
+         Debug\sb6.obj
+         Debug\sb6ktx.obj
+         Debug\sb6object.obj
+         Debug\sb6shader.obj
+         sb6.vcxproj -> C:\Users\mid\Desktop\Mid - Portfolio\Lib\sb6_d32.lib
+     1>Done Building Project "C:\Users\mid\Desktop\Mid - Portfolio\Extern\sb6\sb6.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.99

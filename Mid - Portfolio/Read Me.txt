@@ -1,0 +1,70 @@
+################################################################################
+		   DYNAMIC TESSELATION OF WATER SURFACE
+################################################################################
+
+Copyright © 2014-2015 Mid (Midhun Kumar Pallipurath)
+Aspiring Game Programmer
+Undergraduate Portfolio Project @ the Art Institute of Vancouver
+Bachelors of Science in Visual and Game Programming
+
+################################################################################
+I have written this project to familiarize myself with the workings of 
+OpenGL 4.x. The code is available free to use and distribute, external 
+components of my code also conform this copyright. The project is available
+as a Microsoft Visual Studios 2012 solution.
+################################################################################
+
+Copyright Notice:
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the fact that this copyright 
+notice and this permission notice shall be included in all copies or 
+portions of the software and/or documentation files.
+
+DISCLAIMER:
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+################################################################################
+
+Recommended System Requirements:
+Windows 8 32/64Bit.
+OpenGL 4.x compatible Graphics
+4GB RAM
+
+################################################################################
+
+Aim: 
+Optimized water surface simulation.
+
+Method: 
+LoD: Dynamic Tessellation with OpenGl 4.x
+Model: Gerstner Wave Model
+
+Procedure:
+Setup: This project's application environment is heavily basses on the
+application class set-up by the example code found in 
+OpenGL Super Bible (Sixth Edition). 
+Given time constraints, I did not wish to waste anytime setting up the Win32 
+code as I have done for DirectX projects before. The application class is a 
+wrapper using GLFW, for more information please refer to the Super Bible website. 
+
+I have separated the class into a header and cpp file for better ease of use. 
+Added an assert definition that also outputs a string for easier debugging. 
+Added Output debug stings for environment verification in debug mode. Removed 
+unnecessary pre-compiler configs. I am also going to be using their shader compiler
+and math library to expedite my process.
+
+All the core code is packed into my 3D Graphic Engine library a.k.a 3DGE or EDGE
+
+Conclusions:
+
+################################################################################

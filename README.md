@@ -1,4 +1,4 @@
 3DGE
 ====
 
-a lght OpenGL 4.x application environment demonstrating dynamic tesselation
+A light OpenGL 4.x application environment demonstrating dynamic tesselation

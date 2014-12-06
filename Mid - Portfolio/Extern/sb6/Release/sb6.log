@@ -1,0 +1,22 @@
+﻿Build started 11/25/2014 1:23:58 AM.
+     1>Project "C:\Users\mid\Desktop\Mid - Portfolio\Extern\sb6\sb6.vcxproj" on node 3 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt gl3w.c
+         gl3w.c
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt sb6.cpp sb6ktx.cpp sb6object.cpp sb6shader.cpp
+         sb6.cpp
+         sb6ktx.cpp
+         sb6object.cpp
+         sb6shader.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"C:\Users\mid\Desktop\Mid - Portfolio\lib\sb6_r32.lib" /NOLOGO /LTCG Release\gl3w.obj
+         Release\sb6.obj
+         Release\sb6ktx.obj
+         Release\sb6object.obj
+         Release\sb6shader.obj
+         sb6.vcxproj -> C:\Users\mid\Desktop\Mid - Portfolio\lib\sb6_r32.lib
+     1>Done Building Project "C:\Users\mid\Desktop\Mid - Portfolio\Extern\sb6\sb6.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.68
