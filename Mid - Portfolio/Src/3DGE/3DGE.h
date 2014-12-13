@@ -83,7 +83,7 @@ DEALINGS IN THE SOFTWARE.
 //Win32 Interface Setup
 //Setting up GLEW and OpenGL Wrangler (GLFW)
 //################################################################################
-#include "GL/gl3w.h"
+#include "../Include/GL/gl3w.h"
 #define GLFW_NO_GLU 1
 #define GLFW_INCLUDE_GLCOREARB 1
 #include "GL/glfw.h"
@@ -97,6 +97,7 @@ DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <string.h>
 
+#include "Input.h"
 //Engine Name Space
 //################################################################################
 namespace EDGE
@@ -149,7 +150,7 @@ namespace EDGE
 		static void getMousePosition(int& x, int& y);
 
 		void onDebugMessage(GLenum source, GLenum type, GLuint id,
-			GLenum severity, GLsizei length, const GLchar* message);
+		GLenum severity, GLsizei length, const GLchar* message);
 
 	protected:
 		APPINFO     info;

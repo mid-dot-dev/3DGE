@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DGE", "Src\3DGE\3DGE.vcxpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test1Patch", "Src\Test1Patch\Test1Patch.vcxproj", "{4C144C6B-D546-438A-8509-E3B9CB603779}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test2Input", "Src\Test2Input\Test2Input.vcxproj", "{9BB2879C-9069-42DA-8159-748FDCB7095A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -23,12 +25,17 @@ Global
 		{4C144C6B-D546-438A-8509-E3B9CB603779}.Debug|Win32.Build.0 = Debug|Win32
 		{4C144C6B-D546-438A-8509-E3B9CB603779}.Release|Win32.ActiveCfg = Release|Win32
 		{4C144C6B-D546-438A-8509-E3B9CB603779}.Release|Win32.Build.0 = Release|Win32
+		{9BB2879C-9069-42DA-8159-748FDCB7095A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9BB2879C-9069-42DA-8159-748FDCB7095A}.Debug|Win32.Build.0 = Debug|Win32
+		{9BB2879C-9069-42DA-8159-748FDCB7095A}.Release|Win32.ActiveCfg = Release|Win32
+		{9BB2879C-9069-42DA-8159-748FDCB7095A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4C144C6B-D546-438A-8509-E3B9CB603779} = {3A2790D4-61CE-4954-9CA7-899B2A6B4EBF}
+		{9BB2879C-9069-42DA-8159-748FDCB7095A} = {3A2790D4-61CE-4954-9CA7-899B2A6B4EBF}
 		{DE2A517C-2C12-4596-97C9-5E22EC96655C} = {DFFE063A-5795-4D34-B4B4-16B1E7B44113}
 	EndGlobalSection
 EndGlobal
