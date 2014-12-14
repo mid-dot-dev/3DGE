@@ -98,6 +98,7 @@ DEALINGS IN THE SOFTWARE.
 #include <string.h>
 
 #include "Input.h"
+#include "Camera.h"
 //Engine Name Space
 //################################################################################
 namespace EDGE

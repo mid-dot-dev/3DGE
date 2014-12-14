@@ -3,8 +3,11 @@
   <ItemGroup>
     <ClInclude Include="Input.h" />
     <ClInclude Include="3DGE.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3DGE.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
 </Project>

@@ -32,43 +32,49 @@ DEALINGS IN THE SOFTWARE.
 
 //Header Definition
 //################################################################################
-#ifndef _EDGEinput_
-	#define _EDGEinput_
-#pragma once
-//#include "SB6\vmath.h"
-#include "3DGE.h"
 
-enum mouse
+
+#include "Input.h"
+
+Input::Input()
 	{
-		 BUTTON_1
-		,BUTTON_2
-		,BUTTON_3
-		,BUTTON_4
-		,BUTTON_5
-		,BUTTON_6
-		,BUTTON_7
-		,BUTTON_8
-	};
-struct MousePress
-{
-	int X;
-	int Y;
-};
-class Input
-{
-public:
-	Input();
-	void updateMouseDeltas();
-	
-	bool		mKeyStates[GLFW_KEY_LAST];
-	bool		mMouseStates[GLFW_MOUSE_BUTTON_LAST];
-	bool		mDeltaFlag[GLFW_MOUSE_BUTTON_LAST];
-	MousePress  mMousePress[GLFW_MOUSE_BUTTON_LAST];
-	int			mWheelPos;
-	int			mMouseX;
-	int			mMouseY;
-};
+		for(int i=0; i<GLFW_MOUSE_BUTTON_LAST; i++)
+		{
+			mMouseStates[i]=false;
+		}
+		for(int i=0; i<GLFW_MOUSE_BUTTON_LAST; i++)
+		{
+			mDeltaFlag[i]=false;
+		}
+		for(int i=0; i<GLFW_MOUSE_BUTTON_LAST; i++)
+		{
+			mMousePress[i].X=0;
+			mMousePress[i].Y=0;;
+		}
+		for(int i=0; i<GLFW_KEY_LAST; i++)
+		{
+			mKeyStates[i]=false;
+		}
+		mWheelPos	= 0;
+		mMouseX		= 0;
+		mMouseY		= 0;
+	}
+	void Input::updateMouseDeltas()
+	{
+		for(int i=0; i<GLFW_MOUSE_BUTTON_LAST; i++)
+		{
+			if(mMouseStates[i] && !mDeltaFlag[i])
+			{
+				mMousePress[i].X=mMouseX;
+				mMousePress[i].Y=mMouseY;
+				mDeltaFlag[i] = true;
+			}
+			else if(!mMouseStates[i])
+			{
+				mMousePress[i].X=0;
+				mMousePress[i].Y=0;
+				mDeltaFlag[i] = false;
+			}
+		}
+	}
 
-
-
-#endif

@@ -30,7 +30,7 @@ DEALINGS IN THE SOFTWARE.
 ################################################################################
 
 */
-#include "Test2Input.h"
+#include "Test3Camera.h"
 
 
 

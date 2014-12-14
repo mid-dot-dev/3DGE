@@ -1,3 +1,4 @@
+
 /*
 ################################################################################
 
@@ -32,43 +33,52 @@ DEALINGS IN THE SOFTWARE.
 
 //Header Definition
 //################################################################################
-#ifndef _EDGEinput_
-	#define _EDGEinput_
+#ifndef _EDGEcamera_
+	#define _EDGEcamera_
 #pragma once
 //#include "SB6\vmath.h"
 #include "3DGE.h"
-
-enum mouse
-	{
-		 BUTTON_1
-		,BUTTON_2
-		,BUTTON_3
-		,BUTTON_4
-		,BUTTON_5
-		,BUTTON_6
-		,BUTTON_7
-		,BUTTON_8
-	};
-struct MousePress
-{
-	int X;
-	int Y;
-};
-class Input
+class Camera
 {
 public:
-	Input();
-	void updateMouseDeltas();
+	Camera();
+	void Setup(GLfloat fov, GLfloat aspectRatio, GLfloat nearPlane, GLfloat farPlane);
+
+	void SetPosition(const vmath::vec3& position);
+	void SetLookAt(const vmath::vec3& target);
+	void InitMat();
+
+	void Walk(GLfloat distance);
+	void Strafe(GLfloat distance);
+	void Rise(GLfloat distance);
+
+	void Yaw(GLfloat degree);
+	void Pitch(GLfloat degree);
+
+	const vmath::vec3& GetPosition() const	{ return mPosition; }
 	
-	bool		mKeyStates[GLFW_KEY_LAST];
-	bool		mMouseStates[GLFW_MOUSE_BUTTON_LAST];
-	bool		mDeltaFlag[GLFW_MOUSE_BUTTON_LAST];
-	MousePress  mMousePress[GLFW_MOUSE_BUTTON_LAST];
-	int			mWheelPos;
-	int			mMouseX;
-	int			mMouseY;
+	vmath::mat4 GetViewMatrix() const;
+	vmath::mat4 GetProjectionMatrix() const;
+	void UpdateMatrix();
+
+private:
+	void Renormalize();
+
+	vmath::vec3 mPosition;
+	vmath::vec3 mLookAt;
+	vmath::vec3 mRight;
+	vmath::vec3 mUp;
+
+	vmath::mat4 mProj;
+	vmath::mat4 mMView;
+	
+	vmath::mat4 mRot;
+
+
+	GLfloat mFOV;
+	GLfloat mAspectRatio;
+	GLfloat mNearPlane;
+	GLfloat mFarPlane;
 };
-
-
 
 #endif

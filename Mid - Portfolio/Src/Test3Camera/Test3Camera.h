@@ -33,11 +33,10 @@ DEALINGS IN THE SOFTWARE.
 
 //Header Definition
 //################################################################################
-#ifndef _Test2Input_
-	#define _Test2Input_
+#ifndef _Test3Camera_
+	#define _Test3Camera_
 #pragma once
 #include "3DGE.h"
-//#include "Camera.h"
 class Test2Input : public EDGE::application
 {
 public:

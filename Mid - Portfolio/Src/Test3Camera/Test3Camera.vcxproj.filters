@@ -7,9 +7,9 @@
     <None Include="..\..\Bin\media\shaders\Test1Patch\Test1Patch.vs.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Test2Input\Test2Input.cpp" />
+    <ClCompile Include="Test3Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Test2Input.h" />
+    <ClInclude Include="Test3Camera.h" />
   </ItemGroup>
 </Project>

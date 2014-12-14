@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9BB2879C-9069-42DA-8159-748FDCB7095A}</ProjectGuid>
+    <ProjectGuid>{F5229D0C-34BB-4862-B878-CAB70894A1DC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Test2Input</RootNamespace>
   </PropertyGroup>
@@ -93,9 +93,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Test2Input\Test2Input.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\Bin\media\shaders\Test1Patch\Test1Patch.fs.glsl" />
     <None Include="..\..\Bin\media\shaders\Test1Patch\Test1Patch.tcs.glsl" />
     <None Include="..\..\Bin\media\shaders\Test1Patch\Test1Patch.tes.glsl" />
@@ -107,7 +104,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Test2Input.h" />
+    <ClCompile Include="Test3Camera.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Test3Camera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

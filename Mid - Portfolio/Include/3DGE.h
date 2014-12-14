@@ -107,6 +107,7 @@ DEALINGS IN THE SOFTWARE.
 #include <string.h>
 
 #include "../Src/3DGE/Input.h"
+#include "../Src/3DGE/Camera.h"
 //Engine Name Space
 //################################################################################
 namespace EDGE
