@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Test4Patch.cpp" />
+    <ClCompile Include="patch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Test4Patch.h" />
+    <ClInclude Include="patch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{58ac8e59-1f95-4cf0-bcd1-2c3b31a2675c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Bin\media\shaders\Test4Patch\points.fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Bin\media\shaders\Test4Patch\points.vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Bin\media\shaders\Test4Patch\Test4Patch.fs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Bin\media\shaders\Test4Patch\Test4Patch.tcs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Bin\media\shaders\Test4Patch\Test4Patch.tes.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\..\Bin\media\shaders\Test4Patch\Test4Patch.vs.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

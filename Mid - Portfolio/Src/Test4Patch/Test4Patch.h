@@ -33,17 +33,22 @@ DEALINGS IN THE SOFTWARE.
 
 //Header Definition
 //################################################################################
-#ifndef _Test3Camera_
-	#define _Test3Camera_
+#ifndef _Test4Patch_
+	#define _Test4Patch_
 #pragma once
+
+
 #include "3DGE.h"
-class Test3Camera : public EDGE::application
+#include "patch.h"
+class Test4Patch : public EDGE::application
 {
 public:
-    Test3Camera()
+    Test4Patch()
         : program(0),
-          wireframe(false),
-          paused(false)
+		programCP(0),
+		points(true),
+        wireframe(true),
+        paused(false)
     {
     }
 
@@ -58,22 +63,27 @@ public:
     void render(double currentTime);
 
 protected:
-	Camera		mCamera;
     GLuint      program;
+	GLuint      programCP;
     GLuint      vao;
     GLuint      buffer;
-    vmath::vec3 data[16];
+
+	Camera		mCamera;
+	Input		input;
+	patch		ocean;
+	patch		patchInit;
+	wave		waves[3];
 
     bool        wireframe;
+	bool        points;
     bool        paused;
-	Input		input;
 
     void load_shaders();
-	virtual void onKey(int key, int action);
-    virtual void onMouseButton(int button, int action);
-	virtual void onMouseMove(int x, int y);
-	virtual void onMouseWheel(int pos);
-			void HandleInput(float dt);
+	void onKey(int key, int action);//could be virtuals
+    void onMouseButton(int button, int action);
+	void onMouseMove(int x, int y);
+	void onMouseWheel(int pos);
+	void HandleInput(float dt);
 
     struct
     {
@@ -83,14 +93,19 @@ protected:
             int     proj_matrix;
             int     mvp;
         } patch;
+		struct
+        {
+            int     draw_color;
+            int     mvp;
+        } control_point;
     } uniforms;
 };
 
-void Test3Camera::onMouseWheel(int pos)
+void Test4Patch::onMouseWheel(int pos)
 {
 	input.mWheelPos = pos;
 }
-void Test3Camera::onKey(int key, int action)
+void Test4Patch::onKey(int key, int action)
 {
 	if(action==GLFW_PRESS)
 	{
@@ -101,7 +116,7 @@ void Test3Camera::onKey(int key, int action)
 		input.mKeyStates[key]=false;
 	}
 }
-void Test3Camera::onMouseButton(int button, int action)
+void Test4Patch::onMouseButton(int button, int action)
 {
 	if(action==GLFW_PRESS)
 	{
@@ -112,14 +127,14 @@ void Test3Camera::onMouseButton(int button, int action)
 		input.mMouseStates[button]=false;
 	}
 }
-void Test3Camera::onMouseMove(int x, int y)
+void Test4Patch::onMouseMove(int x, int y)
 {
 	
 	input.mMouseX=x;
 	input.mMouseY=y;
 }
 
-void Test3Camera::HandleInput(float dt)
+void Test4Patch::HandleInput(float dt)
 {
 	input.updateMouseDeltas();
 	if (input.mKeyStates['Y'])
@@ -154,13 +169,51 @@ void Test3Camera::HandleInput(float dt)
     {
 		mCamera.Yaw(10.0f*dt);
 	}
+
+
+	if (input.mKeyStates['1'])
+	{
+		waves[0].toggle=true;
+	}
+	if (input.mKeyStates['2'])
+	{
+		waves[1].toggle=true;
+	}
+	if (input.mKeyStates['3'])
+	{
+		waves[2].toggle=true;
+	}
+	if (input.mKeyStates['4'])
+	{
+		waves[0].toggle=false;
+	}
+	if (input.mKeyStates['5'])
+	{
+		waves[1].toggle=false;
+	}
+	if (input.mKeyStates['6'])
+	{
+		waves[2].toggle=false;
+	}
+
 	if (input.mMouseStates[mouse::BUTTON_1])
 	{
-		int deltaX = input.mMousePress[mouse::BUTTON_1].X - input.mMouseX;
+		//int deltaX = input.mMousePress[mouse::BUTTON_1].X - input.mMouseX;
 		int deltaY = input.mMousePress[mouse::BUTTON_1].Y - input.mMouseY;
-		if(deltaX ||deltaY)
-		{mCamera.Yaw((dt*-deltaX)*0.1f);// diffin y
+		if(deltaY)
+		{
+		//mCamera.Yaw((dt*-deltaX)*0.1f);// diffin y
 		mCamera.Pitch((dt*-deltaY)*0.1f);//diff in x
+		}
+		
+	}
+	if (input.mMouseStates[mouse::BUTTON_2])
+	{
+		int deltaX = input.mMousePress[mouse::BUTTON_2].X - input.mMouseX;
+		//int deltaY = input.mMousePress[mouse::BUTTON_1].Y - input.mMouseY;
+		if(deltaX)
+		{mCamera.Yaw((dt*-deltaX)*0.1f);// diffin y
+		//mCamera.Pitch((dt*-deltaY)*0.1f);//diff in x
 		}
 		
 	}

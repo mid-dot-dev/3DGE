@@ -30,15 +30,15 @@ DEALINGS IN THE SOFTWARE.
 ################################################################################
 
 */
-#include "Test3Camera.h"
+#include "Test4Patch.h"
 
 
 
-void Test3Camera::startup()
+void Test4Patch::startup()
 {
 	mCamera.Setup(50.0f, ((float)info.windowWidth / (float)info.windowHeight),  1.0f, 100000.0f);
-	mCamera.SetPosition(vmath::vec3(0.0f, 0.0f, -4.0f));
-	mCamera.SetLookAt(vmath::vec3(0.0f, 0.0f, 1.0f));
+	mCamera.SetPosition(vmath::vec3(10.0f, -28.0f, 10.0f));
+	mCamera.SetLookAt(vmath::vec3(10.0f, -28.0f, 11.0f));
 	mCamera.InitMat();
 
     load_shaders();
@@ -49,14 +49,24 @@ void Test3Camera::startup()
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(data), NULL, GL_DYNAMIC_DRAW);
+	int sizeOfPoly = sizeof(vmath::vec3) * ocean.getPolySize();
+
+    glBufferData(GL_ARRAY_BUFFER, sizeOfPoly, NULL, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);// sets the buffer as 0th vertex attribute
     glEnableVertexAttribArray(0);//then enable it
 
+	patchInit.InitPoly(50);
+	ocean.InitWave(waves[0], 1, -2.5, 15.0f, 5, 30, vmath::vec3( 4.3f, 0.3f,-0.3f), false);
+	ocean.InitWave(waves[1], 1,    3, 5.0f,  5, 30, vmath::vec3( 0.4f,-0.1f,-7.3f), false);
+	ocean.InitWave(waves[2], 1,    2, 15.0f, 5, 30, vmath::vec3( 1.0f, 9.0f, 0.0f), false);
+
 }
 
-void Test3Camera::render(double currentTime)
+void Test4Patch::render(double currentTime)
 {
+	static const GLfloat black[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    static const GLfloat one = 1.0f;
+
 	static GLfloat t = 0.0f;
 	static unsigned int startTime = 0;
 	static unsigned int lastTime = 0;
@@ -65,37 +75,10 @@ void Test3Camera::render(double currentTime)
 		startTime = currentTime;
 		lastTime = currentTime;
 	}
+	// if (!input.mKeyStates['P'])
 	t = (currentTime - startTime) * 0.001f;
 	float dt = (currentTime - lastTime) * 0.001f;
 	lastTime = currentTime;
-
-    static const GLfloat black[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    static const GLfloat one = 1.0f;
-
-    static const float patch_initializer[] =
-    {
-        -1.0f,  -1.0f,  0.0f,
-        -0.33f, -1.0f,  0.0f,
-         0.33f, -1.0f,  0.0f,
-         1.0f,  -1.0f,  0.0f,
-
-        -1.0f,  -0.33f, 0.0f,
-        -0.33f, -0.33f, 0.0f,
-         0.33f, -0.33f, 0.0f,
-         1.0f,  -0.33f, 0.0f,
-
-        -1.0f,   0.33f, 0.0f,
-        -0.33f,  0.33f, 0.0f,
-         0.33f,  0.33f, 0.0f,
-         1.0f,   0.33f, 0.0f,
-
-        -1.0f,   1.0f,  0.0f,
-        -0.33f,  1.0f,  0.0f,
-         0.33f,  1.0f,  0.0f,
-         1.0f,   1.0f,  0.0f,
-    };
-	//sending data toot he buffer instead of poking memory each time
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(patch_initializer), patch_initializer);
 
     glViewport(0, 0, info.windowWidth, info.windowHeight);
     glClearBufferfv(GL_COLOR, 0, black);
@@ -103,8 +86,15 @@ void Test3Camera::render(double currentTime)
 
     glEnable(GL_DEPTH_TEST);
 
+	int sizeOfPolyD = sizeof(vmath::vec3) * ocean.getPolySize();
+	ocean.polyD = (vmath::vec3 *)glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeOfPolyD, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+    memcpy(ocean.polyD, patchInit.polyD, sizeOfPolyD);
+	ocean.Animate(currentTime,3,waves);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+
     glUseProgram(program);
 	//mCamera.UpdateMatrix();
+	mCamera.SetCenter(ocean.polyAvg());
     vmath::mat4 proj_matrix = mCamera.GetProjectionMatrix();
 	vmath::mat4 mv_matrix = mCamera.GetViewMatrix();
 
@@ -114,7 +104,7 @@ void Test3Camera::render(double currentTime)
     glUniformMatrix4fv(uniforms.patch.proj_matrix, 1, GL_FALSE, proj_matrix);
     glUniformMatrix4fv(uniforms.patch.mvp, 1, GL_FALSE, proj_matrix * mv_matrix);
 
-    if (input.mKeyStates['W'])
+    if (wireframe)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -124,28 +114,36 @@ void Test3Camera::render(double currentTime)
     }
 
     glPatchParameteri(GL_PATCH_VERTICES, 16);
-    glDrawArrays(GL_PATCHES, 0, 16);
+    glDrawArrays(GL_PATCHES, 0, ocean.getPolySize());
+
+	glUseProgram(programCP);
+    glUniformMatrix4fv(uniforms.control_point.mvp, 1, GL_FALSE, proj_matrix * mv_matrix);
+
+    if (points)
+    {
+        glPointSize(9.0f);
+        glUniform4fv(uniforms.control_point.draw_color, 1, vmath::vec4(0.2f, 0.7f, 0.9f, 1.0f));
+        glDrawArrays(GL_POINTS, 0, ocean.getPolySize());
+    }
 }
 
-void Test3Camera::load_shaders()
+void Test4Patch::load_shaders()
 {
     if (program)
         glDeleteProgram(program);
 
     GLuint shaders[4];
 //#ifdef  _DEBUG
-	shaders[0] = sb6::shader::load("Bin/media/shaders/Test1Patch/Test1Patch.vs.glsl", GL_VERTEX_SHADER, true);
-    shaders[1] = sb6::shader::load("Bin/media/shaders/Test1Patch/Test1Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
-    shaders[2] = sb6::shader::load("Bin/media/shaders/Test1Patch/Test1Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
-    shaders[3] = sb6::shader::load("Bin/media/shaders/Test1Patch/Test1Patch.fs.glsl", GL_FRAGMENT_SHADER);
+	shaders[0] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.vs.glsl", GL_VERTEX_SHADER, true);
+    shaders[1] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
+    shaders[2] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
+    shaders[3] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.fs.glsl", GL_FRAGMENT_SHADER);
 //#else
-//	shaders[0] = sb6::shader::load("media/shaders/Test1Patch/Test1Patch.vs.glsl", GL_VERTEX_SHADER, true);
-//    shaders[1] = sb6::shader::load("media/shaders/Test1Patch/Test1Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
-//    shaders[2] = sb6::shader::load("media/shaders/Test1Patch/Test1Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
-//    shaders[3] = sb6::shader::load("media/shaders/Test1Patch/Test1Patch.fs.glsl", GL_FRAGMENT_SHADER);
+//	  shaders[0] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.vs.glsl", GL_VERTEX_SHADER, true);
+//    shaders[1] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
+//    shaders[2] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
+//    shaders[3] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.fs.glsl", GL_FRAGMENT_SHADER);
 //#endif //  _DEBUG
-
-    
 
     program = sb6::program::link_from_shaders(shaders, 4, true);
 
@@ -153,8 +151,19 @@ void Test3Camera::load_shaders()
     uniforms.patch.proj_matrix = glGetUniformLocation(program, "proj_matrix");
     uniforms.patch.mvp = glGetUniformLocation(program, "mvp");
 
+	if (programCP)
+        glDeleteProgram(programCP);
+
+    shaders[0] = sb6::shader::load("Bin/media/shaders/Test4Patch/points.vs.glsl", GL_VERTEX_SHADER);
+    shaders[1] = sb6::shader::load("Bin/media/shaders/Test4Patch/points.fs.glsl", GL_FRAGMENT_SHADER);
+
+    programCP = sb6::program::link_from_shaders(shaders, 2, true);
+
+    uniforms.control_point.draw_color = glGetUniformLocation(programCP, "draw_color");
+    uniforms.control_point.mvp = glGetUniformLocation(programCP, "mvp");
+
 }
 
 
 
-DECLARE_MAIN(Test3Camera)
+DECLARE_MAIN(Test4Patch)

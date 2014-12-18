@@ -47,6 +47,7 @@ Camera::Camera()
 	mPosition = vmath::vec3(0.0f, 0.0f, -4.0f);
 	mLookAt = vmath::vec3(0.0f, 0.0f, 1.0f);
 	mUp = vmath::vec3(0.0f, 1.0f, 0.0f);
+	mCenter = vmath::vec3(0.0f, 0.0f, 0.0f);
 	Renormalize();
 	mProj = vmath::mat4::identity();
 	mMView = vmath::mat4::identity();
@@ -68,6 +69,7 @@ void Camera::Setup(GLfloat fov, GLfloat aspectRatio, GLfloat nearPlane, GLfloat 
 void Camera::SetPosition(const vmath::vec3& position)
 {
 	mPosition = position;
+	UpdateMatrix();
 }
 
 
@@ -77,7 +79,17 @@ void Camera::SetLookAt(const vmath::vec3& target)
 {
 	mLookAt = target;
 	Renormalize();
+	UpdateMatrix();
 }
+
+
+void Camera::SetCenter(const vmath::vec3& center)
+{
+	mCenter = center;
+	Renormalize();
+	UpdateMatrix();
+}
+
 void Camera::InitMat()
 {
 	UpdateMatrix();
@@ -114,19 +126,22 @@ void Camera::Rise(GLfloat distance)
 void Camera::Pitch(GLfloat degree)
 {
 	Renormalize();
-
-	mRot =  vmath::rotate(degree, mRight) * mRot;
+	vmath::mat4 thisRot = vmath::rotate(degree, mRight);
+	mRot =  thisRot * mRot;
+	vmath::vec4 rotLook = vmath::vec4(mLookAt, 1.0f);
+	rotLook = rotLook*thisRot;
+	mLookAt =  vmath::vec3(rotLook[0],rotLook[1],rotLook[2]);
 	Renormalize();
 	UpdateMatrix();
 }
 void Camera::Yaw(GLfloat degree)
 {
 	Renormalize();
-	//vmath::mat4 test = vmath::rotate(degree, mUp);
-	//vmath::vec4 test2 = vmath::vec4(mLookAt[0], mLookAt[1], mLookAt[2], 1.0f);
-	//test2 = test2*test;
-	//mLookAt[0]=test2[0]; mLookAt[1]=test2[1]; mLookAt[2]=test2[2];
-	mRot =  vmath::rotate(degree, mUp) * mRot;
+	vmath::mat4 thisRot = vmath::rotate(degree, mUp);
+	mRot =  thisRot * mRot;
+	vmath::vec4 rotLook = vmath::vec4(mLookAt, 1.0f);
+	rotLook = rotLook*thisRot;
+	mLookAt =  vmath::vec3(rotLook[0],rotLook[1],rotLook[2]);
 	Renormalize();
 	UpdateMatrix();
 }
@@ -151,20 +166,21 @@ void Camera::UpdateMatrix()
 	viewY = vmath::normalize(viewY);
 
 	vmath::mat4 rotation = vmath::mat4::identity();
-	rotation[0][0]=viewX[0];
-	rotation[0][1]=viewX[1];
-	rotation[0][2]=viewX[2];
+	//rotation[0][0]=viewX[0];
+	//rotation[0][1]=viewX[1];
+	//rotation[0][2]=viewX[2];
 
-	rotation[1][0]=viewY[0];
-	rotation[1][1]=viewY[1];
-	rotation[1][2]=viewY[2];
+	//rotation[1][0]=viewY[0];
+	//rotation[1][1]=viewY[1];
+	//rotation[1][2]=viewY[2];
 
-	rotation[2][0]=viewZ[0];
-	rotation[2][1]=viewZ[1];
-	rotation[2][2]=viewZ[2];
+	//rotation[2][0]=viewZ[0];
+	//rotation[2][1]=viewZ[1];
+	//rotation[2][2]=viewZ[2];
 
 	vmath::mat4 translation = vmath::translate(mPosition);
 	mMView = vmath::mat4::identity();
+	mMView = vmath::lookat(mLookAt-mPosition, mCenter, mUp);
 	mMView = mRot*translation*mMView;
 
 }

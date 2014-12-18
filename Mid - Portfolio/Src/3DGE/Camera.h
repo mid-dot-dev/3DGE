@@ -46,6 +46,7 @@ public:
 
 	void SetPosition(const vmath::vec3& position);
 	void SetLookAt(const vmath::vec3& target);
+	void SetCenter(const vmath::vec3& center);
 	void InitMat();
 
 	void Walk(GLfloat distance);
@@ -71,7 +72,7 @@ private:
 
 	vmath::mat4 mProj;
 	vmath::mat4 mMView;
-	
+	vmath::vec3 mCenter;
 	vmath::mat4 mRot;
 
 
