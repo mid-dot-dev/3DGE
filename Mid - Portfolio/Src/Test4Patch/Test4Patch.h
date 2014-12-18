@@ -46,7 +46,7 @@ public:
     Test4Patch()
         : program(0),
 		programCP(0),
-		points(true),
+		points(false),
         wireframe(true),
         paused(false)
     {
@@ -67,6 +67,7 @@ protected:
 	GLuint      programCP;
     GLuint      vao;
     GLuint      buffer;
+	GLuint      buffLod;
 
 	Camera		mCamera;
 	Input		input;
@@ -92,6 +93,7 @@ protected:
             int     mv_matrix;
             int     proj_matrix;
             int     mvp;
+			//int		dist;
         } patch;
 		struct
         {

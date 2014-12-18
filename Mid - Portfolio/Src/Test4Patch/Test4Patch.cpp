@@ -55,10 +55,15 @@ void Test4Patch::startup()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);// sets the buffer as 0th vertex attribute
     glEnableVertexAttribArray(0);//then enable it
 
+	//glGenBuffers(1, &buffLod);
+	//glBindBuffer(GL_TESS_CONTROL_SHADER, buffLod);
+	//glBufferData(GL_TESS_CONTROL_SHADER, sizeof(ocean.detail), NULL, GL_DYNAMIC_READ);
+	
 	patchInit.InitPoly(50);
-	ocean.InitWave(waves[0], 1, -2.5, 15.0f, 5, 30, vmath::vec3( 4.3f, 0.3f,-0.3f), false);
-	ocean.InitWave(waves[1], 1,    3, 5.0f,  5, 30, vmath::vec3( 0.4f,-0.1f,-7.3f), false);
-	ocean.InitWave(waves[2], 1,    2, 15.0f, 5, 30, vmath::vec3( 1.0f, 9.0f, 0.0f), false);
+	//						steep,ampli,waveL,speed
+	ocean.InitWave(waves[0], 20, -2.5, 15.0f, 1, 30, vmath::vec3( 4.3f, 0.3f,-0.3f), false);
+	ocean.InitWave(waves[1], 1,   -1, 15.0f,  1, 30, vmath::vec3( 0.4f,-0.1f,-7.3f), false);
+	ocean.InitWave(waves[2], 16,    2, 15.0f, 1, 30, vmath::vec3( 1.0f, 9.0f, 0.0f), false);
 
 }
 
@@ -89,8 +94,10 @@ void Test4Patch::render(double currentTime)
 	int sizeOfPolyD = sizeof(vmath::vec3) * ocean.getPolySize();
 	ocean.polyD = (vmath::vec3 *)glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeOfPolyD, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
     memcpy(ocean.polyD, patchInit.polyD, sizeOfPolyD);
+
 	ocean.Animate(currentTime,3,waves);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
+	ocean.LoD(mCamera.GetPosition());
 
     glUseProgram(program);
 	//mCamera.UpdateMatrix();
@@ -103,6 +110,18 @@ void Test4Patch::render(double currentTime)
     glUniformMatrix4fv(uniforms.patch.mv_matrix, 1, GL_FALSE, mv_matrix);
     glUniformMatrix4fv(uniforms.patch.proj_matrix, 1, GL_FALSE, proj_matrix);
     glUniformMatrix4fv(uniforms.patch.mvp, 1, GL_FALSE, proj_matrix * mv_matrix);
+
+	//glUniform4i(uniforms.patch.dist, 1, GL_FALSE, ocean.detail);
+
+	//for(int i=0; i<100; i++)
+	//{
+	//	for(int j=0; j<5; j++)
+	//	{
+	//		glGetUniformLocation(program, "myDistances[i].dist[j]");
+	//		glUniform1i(uniforms.patch.dist, ocean.detail[i].dist[j]);
+	//	}
+	//}
+	
 
     if (wireframe)
     {
@@ -133,17 +152,17 @@ void Test4Patch::load_shaders()
         glDeleteProgram(program);
 
     GLuint shaders[4];
-//#ifdef  _DEBUG
+#ifdef  _DEBUG
 	shaders[0] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.vs.glsl", GL_VERTEX_SHADER, true);
     shaders[1] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
     shaders[2] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
     shaders[3] = sb6::shader::load("Bin/media/shaders/Test4Patch/Test4Patch.fs.glsl", GL_FRAGMENT_SHADER);
-//#else
-//	  shaders[0] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.vs.glsl", GL_VERTEX_SHADER, true);
-//    shaders[1] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
-//    shaders[2] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
-//    shaders[3] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.fs.glsl", GL_FRAGMENT_SHADER);
-//#endif //  _DEBUG
+#else
+	  shaders[0] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.vs.glsl", GL_VERTEX_SHADER, true);
+    shaders[1] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.tcs.glsl", GL_TESS_CONTROL_SHADER);
+    shaders[2] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.tes.glsl", GL_TESS_EVALUATION_SHADER);
+    shaders[3] = sb6::shader::load("media/shaders/Test4Patch/Test4Patch.fs.glsl", GL_FRAGMENT_SHADER);
+#endif //  _DEBUG
 
     program = sb6::program::link_from_shaders(shaders, 4, true);
 
@@ -153,9 +172,13 @@ void Test4Patch::load_shaders()
 
 	if (programCP)
         glDeleteProgram(programCP);
-
+#ifdef  _DEBUG
     shaders[0] = sb6::shader::load("Bin/media/shaders/Test4Patch/points.vs.glsl", GL_VERTEX_SHADER);
     shaders[1] = sb6::shader::load("Bin/media/shaders/Test4Patch/points.fs.glsl", GL_FRAGMENT_SHADER);
+#else
+	shaders[0] = sb6::shader::load("media/shaders/Test4Patch/points.vs.glsl", GL_VERTEX_SHADER);
+    shaders[1] = sb6::shader::load("media/shaders/Test4Patch/points.fs.glsl", GL_FRAGMENT_SHADER);
+#endif
 
     programCP = sb6::program::link_from_shaders(shaders, 2, true);
 

@@ -58,7 +58,7 @@ void patch::UpdateData()
 	int R = 0;
 	int L = 1;	
 	int B = 1;
-	short insert = 0;
+	int insert = 0;
 	for(int i=0; i<polySize; i++)
 	{
 		if(i<16)
@@ -101,10 +101,84 @@ void patch::Allocate()
 	dataD = new  vmath::vec3*[dataSize];
 	polyD = new  vmath::vec3[polySize];
 }
+double patch::distanceSqr(vmath::vec3 a, vmath::vec3 b)
+{
+	return (((a[0]-b[0])*(a[0]-b[0])) + ((a[1]-b[1])*(a[1]-b[1])) + ((a[1]-b[1])*(a[1]-b[1])));
+}
+int patch::det(double distSq)
+{
+	return ((300000 - distSq)/10000)/6;
+}
+bool patch::is4th(int i, int &R)
+{
+	if((i+1)%4==0)
+	{ 
+		R++; 
+		return true; 
+	} 
+	else 
+		return false;
+	if(R>4)
+	{
+		R=1;
+	}
+}
 
+void patch::LoD(vmath::vec3 camPos)
+{
+	int R = 1;
+	int num = 0;
+
+	vmath::vec3 corners[4];
+	vmath::vec3 midPoint[5];
+	for (int i = 0; i < polySize; i++)// for each data point
+	{
+		if(R==1 && is4th(i, R))
+		{
+			corners[0]=polyD[i-3];
+			corners[1]=polyD[i];
+		}
+		else if(R==4 && is4th(i, R))
+		{
+			corners[2]=polyD[i-3];
+			corners[3]=polyD[i];
+
+			midPoints[num].level[0] = (corners[0]+corners[1])*0.5;
+			midPoints[num].level[1] = (corners[1]+corners[3])*0.5;
+			midPoints[num].level[2] = (corners[3]+corners[2])*0.5;
+			midPoints[num].level[3] = (corners[2]+corners[0])*0.5;
+
+			midPoints[num].level[4] = (midPoints[num].level[0]+midPoints[num].level[1])*0.5;
+			num++;
+			R=1;
+		}
+		else
+			is4th(i, R);
+	}
+
+	for(int i=0; i<PatchDensityL * PatchDensityB; i++)
+	{
+		detail[i].dist[0] = det( distanceSqr(camPos,midPoints[i].level[0]) ) ;
+		detail[i].dist[1] = det( distanceSqr(camPos,midPoints[i].level[1]) ) ;
+		detail[i].dist[2] = det( distanceSqr(camPos,midPoints[i].level[2]) ) ;
+		detail[i].dist[3] = det( distanceSqr(camPos,midPoints[i].level[3]) ) ;
+		detail[i].dist[4] = det( distanceSqr(camPos,midPoints[i].level[4]) ) ;
+	}
+
+	/*for(int i=0; i<PatchDensityL * PatchDensityB; i++)
+	{
+		det1[0]= det( detail[i].dist[0] );
+		det2[0]= det( detail[i].dist[1] );
+		det3[0]= det( detail[i].dist[2] );
+		det4[0]= det( detail[i].dist[3] );
+		det5[0]= det( detail[i].dist[4] );
+	}*/
+
+}
 void patch::Animate(float t, int numOfWaves, wave *w)
 {
 	UpdateData();
+
 
 	vmath::vec3 pos = vmath::vec3(0.0f, 0.0f, 0.0f);
 	vmath::vec3 data= vmath::vec3(0.0f, 0.0f, 0.0f);
@@ -136,6 +210,10 @@ void patch::Animate(float t, int numOfWaves, wave *w)
 				}
 
 				*dataD[i]=data;// storing temp back to data thus also altering poly
+
+				
+
+
 			}
 		}
 	StitchPoly();
