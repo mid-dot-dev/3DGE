@@ -93,7 +93,7 @@ protected:
             int     mv_matrix;
             int     proj_matrix;
             int     mvp;
-			//int		dist;
+			int		dist;
         } patch;
 		struct
         {
@@ -139,37 +139,30 @@ void Test4Patch::onMouseMove(int x, int y)
 void Test4Patch::HandleInput(float dt)
 {
 	input.updateMouseDeltas();
-	if (input.mKeyStates['Y'])
+
+	if (input.mKeyStates['W'])
     {
-		mCamera.Walk(-10.0f*dt);
+		mCamera.Walk(1.0f);
 	}
-	if (input.mKeyStates['H'])
+	if (input.mKeyStates['S'])
     {
-		mCamera.Walk(10.0f*dt);
+		mCamera.Walk(-1.0f);
 	}
-	if (input.mKeyStates['G'])
+	if (input.mKeyStates['D'])
     {
-		mCamera.Strafe(-10.0f*dt);
+		mCamera.Strafe(-1.0f);
 	}
-	if (input.mKeyStates['J'])
+	if (input.mKeyStates['A'])
     {
-		mCamera.Strafe(10.0f*dt);
+		mCamera.Strafe(1.0f);
 	}
-	if (input.mKeyStates['T'])
+	if (input.mKeyStates['Q'])
     {
-		mCamera.Rise(10.0f*dt);
+		mCamera.Rise(1.0f);
 	}
-	if (input.mKeyStates['U'])
+	if (input.mKeyStates['E'])
     {
-		mCamera.Rise(-10.0f*dt);
-	}
-	if (input.mKeyStates['V'])
-    {
-		mCamera.Pitch(10.0f*dt);
-	}
-	if (input.mKeyStates['C'])
-    {
-		mCamera.Yaw(10.0f*dt);
+		mCamera.Rise(-1.0f);
 	}
 
 
@@ -198,27 +191,93 @@ void Test4Patch::HandleInput(float dt)
 		waves[2].toggle=false;
 	}
 
+	//if (input.mMouseStates[mouse::BUTTON_2])
+	//{
+	//	int deltaY = input.mMousePress[mouse::BUTTON_2].Y - input.mMouseY;
+	//	if(deltaY)
+	//	{
+	//		mCamera.Pitch((deltaY)*0.005f);// diffin y
+	//	}
+	//}
 	if (input.mMouseStates[mouse::BUTTON_1])
 	{
-		//int deltaX = input.mMousePress[mouse::BUTTON_1].X - input.mMouseX;
-		int deltaY = input.mMousePress[mouse::BUTTON_1].Y - input.mMouseY;
-		if(deltaY)
-		{
-		//mCamera.Yaw((dt*-deltaX)*0.1f);// diffin y
-		mCamera.Pitch((dt*-deltaY)*0.1f);//diff in x
-		}
-		
-	}
-	if (input.mMouseStates[mouse::BUTTON_2])
-	{
-		int deltaX = input.mMousePress[mouse::BUTTON_2].X - input.mMouseX;
-		//int deltaY = input.mMousePress[mouse::BUTTON_1].Y - input.mMouseY;
+		int deltaX = input.mMousePress[mouse::BUTTON_1].X - input.mMouseX;
 		if(deltaX)
-		{mCamera.Yaw((dt*-deltaX)*0.1f);// diffin y
-		//mCamera.Pitch((dt*-deltaY)*0.1f);//diff in x
+		{
+			mCamera.Yaw((deltaX)*0.005f);// diffin y
 		}
-		
 	}
+/*
+	if(input.mKeyStates['T'])
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(waves[i].toggle)
+			{
+				waves[i].Ampl++;
+			}
+		}
+
+	}
+	if(input.mKeyStates['Y'])
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(waves[i].toggle)
+			{
+				waves[i].Ampl--;
+			}
+		}
+
+	}
+
+
+	if(input.mKeyStates['G'])
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(waves[i].toggle)
+			{
+				waves[i].Lamda++;
+			}
+		}
+
+	}
+	if(input.mKeyStates['H'])
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(waves[i].toggle)
+			{
+				waves[i].Lamda--;
+			}
+		}
+
+	}
+
+	if(input.mKeyStates['B'])
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(waves[i].toggle)
+			{
+				waves[i].Speed++;
+			}
+		}
+
+	}
+	if(input.mKeyStates['N'])
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(waves[i].toggle)
+			{
+				waves[i].Speed--;
+			}
+		}
+
+	}
+*/
 }
 //Header Definition
 //################################################################################

@@ -75,8 +75,8 @@ void patch::UpdateData()
 }
 void patch::StitchPoly()
 {
-	int R = 0;
-	int L = 1;	
+	int R = 0; //row, keeps trach of the current row
+	int L = 1; 
 	int B = 1;
 	int insert = 0;
 	for(int i=0; i<polySize; i++)
@@ -103,12 +103,20 @@ void patch::Allocate()
 }
 double patch::distanceSqr(vmath::vec3 a, vmath::vec3 b)
 {
-	return (((a[0]-b[0])*(a[0]-b[0])) + ((a[1]-b[1])*(a[1]-b[1])) + ((a[1]-b[1])*(a[1]-b[1])));
+	return (((a[0]-b[0])*(a[0]-b[0])) + ((a[1]-b[1])*(a[1]-b[1])) + ((a[2]-b[2])*(a[2]-b[2])));
 }
+//this is just a temprary random way to make the distance a more manageable number for tessellation 
 int patch::det(double distSq)
 {
-	return ((300000 - distSq)/10000)/6;
+	int now = ((300000 - distSq)/10000)/3;
+	if(now<1)
+	{
+		now=1;
+	}
+	//now *=now;
+	return now;
 }
+//used to count control points on the surface
 bool patch::is4th(int i, int &R)
 {
 	if((i+1)%4==0)
@@ -123,7 +131,10 @@ bool patch::is4th(int i, int &R)
 		R=1;
 	}
 }
-
+//this function might need to move to the shader, 
+//maybe? these vec operations should be fater there.
+//because passing all these valus using opengl get uniform is expenssive on string ops
+//maybe? organise the data differently so its easy to pass in the shader, and then unpack there.
 void patch::LoD(vmath::vec3 camPos)
 {
 	int R = 1;
@@ -165,15 +176,6 @@ void patch::LoD(vmath::vec3 camPos)
 		detail[i].dist[4] = det( distanceSqr(camPos,midPoints[i].level[4]) ) ;
 	}
 
-	/*for(int i=0; i<PatchDensityL * PatchDensityB; i++)
-	{
-		det1[0]= det( detail[i].dist[0] );
-		det2[0]= det( detail[i].dist[1] );
-		det3[0]= det( detail[i].dist[2] );
-		det4[0]= det( detail[i].dist[3] );
-		det5[0]= det( detail[i].dist[4] );
-	}*/
-
 }
 void patch::Animate(float t, int numOfWaves, wave *w)
 {
@@ -210,10 +212,6 @@ void patch::Animate(float t, int numOfWaves, wave *w)
 				}
 
 				*dataD[i]=data;// storing temp back to data thus also altering poly
-
-				
-
-
 			}
 		}
 	StitchPoly();

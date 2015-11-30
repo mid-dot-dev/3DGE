@@ -31,13 +31,18 @@ DEALINGS IN THE SOFTWARE.
 
 */
 #include "Test4Patch.h"
-
+#include "stdio.h"
+#include <cstring>
+#include <Windows.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 void Test4Patch::startup()
 {
+	OutputDebugStringA("######startup###########\n");
 	mCamera.Setup(50.0f, ((float)info.windowWidth / (float)info.windowHeight),  1.0f, 100000.0f);
-	mCamera.SetPosition(vmath::vec3(10.0f, -28.0f, 10.0f));
+	mCamera.SetPosition(vmath::vec3(-50.0f, -28.0f, 0.0f));
 	mCamera.SetLookAt(vmath::vec3(10.0f, -28.0f, 11.0f));
 	mCamera.InitMat();
 
@@ -69,6 +74,7 @@ void Test4Patch::startup()
 
 void Test4Patch::render(double currentTime)
 {
+	//OutputDebugStringA("######render###########\n");
 	static const GLfloat black[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     static const GLfloat one = 1.0f;
 
@@ -100,28 +106,51 @@ void Test4Patch::render(double currentTime)
 	ocean.LoD(mCamera.GetPosition());
 
     glUseProgram(program);
-	//mCamera.UpdateMatrix();
 	mCamera.SetCenter(ocean.polyAvg());
     vmath::mat4 proj_matrix = mCamera.GetProjectionMatrix();
 	vmath::mat4 mv_matrix = mCamera.GetViewMatrix();
 
 	HandleInput(dt);
-
     glUniformMatrix4fv(uniforms.patch.mv_matrix, 1, GL_FALSE, mv_matrix);
     glUniformMatrix4fv(uniforms.patch.proj_matrix, 1, GL_FALSE, proj_matrix);
     glUniformMatrix4fv(uniforms.patch.mvp, 1, GL_FALSE, proj_matrix * mv_matrix);
 
-	//glUniform4i(uniforms.patch.dist, 1, GL_FALSE, ocean.detail);
 
-	//for(int i=0; i<100; i++)
-	//{
-	//	for(int j=0; j<5; j++)
-	//	{
-	//		glGetUniformLocation(program, "myDistances[i].dist[j]");
-	//		glUniform1i(uniforms.patch.dist, ocean.detail[i].dist[j]);
-	//	}
-	//}
 	
+	//glGetUniformLocation need a string parameter for shader linking
+	//glGetUniformLocation(program, "myDistances[i].dist[j]");
+	//So I must concat a bunch of strings.
+	//This wont be necessary once i move the lod into the shadder
+	//but right now this is super expensive
+
+	for(int i=0; i<(PatchDensityL*PatchDensityB); i++)
+	{
+		char str1[100] = "myDistances[";
+		char str2[8] = "].dist[";
+		char str3[2] = "]";
+		char str4 = '/0';
+		char stri[100];
+		char sting[100];
+	
+	
+		_itoa(i, stri, 10);
+		std::strcat(str1,stri);
+		std::strcat(str1,str2);
+	
+		for(int j=0; j<5; j++)
+		{
+			char strj[100];
+			_itoa(j, strj, 10);
+			std:strcpy(sting,str1);
+			std::strcat(sting,strj);
+			std::strcat(sting,str3);
+
+			uniforms.patch.dist = glGetUniformLocation(program, sting);
+			glUniform1i(uniforms.patch.dist, ocean.detail[i].dist[j]);
+	
+		}
+	}
+
 
     if (wireframe)
     {

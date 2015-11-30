@@ -1,7 +1,7 @@
 #pragma once
 #define pi 3.14159265359
-#define PatchDensityL 30
-#define PatchDensityB 30
+#define PatchDensityL 10
+#define PatchDensityB 10
 #define PatchSize 4
 #include "SB6\vmath.h"
 

@@ -226,7 +226,7 @@ namespace EDGE
 			info.windowWidth = 800;
 			info.windowHeight = 600;
 			info.majorVersion = 4;
-			info.minorVersion = 3;
+			info.minorVersion = 0;
 			info.samples = 0;
 			info.flags.all = 0;
 			info.flags.cursor = 1;

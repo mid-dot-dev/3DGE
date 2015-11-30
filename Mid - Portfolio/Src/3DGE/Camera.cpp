@@ -47,6 +47,7 @@ Camera::Camera()
 	mPosition = vmath::vec3(0.0f, 0.0f, -4.0f);
 	mLookAt = vmath::vec3(0.0f, 0.0f, 1.0f);
 	mUp = vmath::vec3(0.0f, 1.0f, 0.0f);
+	mRight = (vmath::cross(mUp, mLookAt));
 	mCenter = vmath::vec3(0.0f, 0.0f, 0.0f);
 	Renormalize();
 	mProj = vmath::mat4::identity();
@@ -77,7 +78,7 @@ void Camera::SetPosition(const vmath::vec3& position)
 
 void Camera::SetLookAt(const vmath::vec3& target)
 {
-	mLookAt = target;
+	mLookAt = target - mPosition;
 	Renormalize();
 	UpdateMatrix();
 }
@@ -98,17 +99,16 @@ void Camera::InitMat()
 
 void Camera::Walk(GLfloat distance)
 {
-	mPosition += vmath::vec3(0.0f,0.0f,distance);
-	mLookAt += vmath::vec3(0.0f,0.0f,distance);
+	mPosition += mLookAt * distance;
 	UpdateMatrix();
 }
+
 
 //----------------------------------------------------------------------------------------------------
 
 void Camera::Strafe(GLfloat distance)
 {
-	mPosition += vmath::vec3(distance,0.0f,0.0f);
-	mLookAt += vmath::vec3(distance,0.0f,0.0f);
+	mPosition +=  mRight * distance;
 	UpdateMatrix();
 }
 
@@ -117,7 +117,6 @@ void Camera::Strafe(GLfloat distance)
 void Camera::Rise(GLfloat distance)
 {
 	mPosition += vmath::vec3(0.0f,distance,0.0f);
-	mLookAt += vmath::vec3(0.0f,distance,0.0f);
 	UpdateMatrix();
 }
 
@@ -125,12 +124,16 @@ void Camera::Rise(GLfloat distance)
 
 void Camera::Pitch(GLfloat degree)
 {
-	Renormalize();
+	//Renormalize();
 	vmath::mat4 thisRot = vmath::rotate(degree, mRight);
 	mRot =  thisRot * mRot;
 	vmath::vec4 rotLook = vmath::vec4(mLookAt, 1.0f);
 	rotLook = rotLook*thisRot;
 	mLookAt =  vmath::vec3(rotLook[0],rotLook[1],rotLook[2]);
+	vmath::vec4 rotUp = vmath::vec4(mUp, 1.0f);
+	rotUp = rotUp*thisRot;
+	mUp =  vmath::vec3(rotUp[0],rotUp[1],rotUp[2]);
+	mRight = (vmath::cross(mUp, mLookAt));
 	Renormalize();
 	UpdateMatrix();
 }
@@ -140,8 +143,18 @@ void Camera::Yaw(GLfloat degree)
 	vmath::mat4 thisRot = vmath::rotate(degree, mUp);
 	mRot =  thisRot * mRot;
 	vmath::vec4 rotLook = vmath::vec4(mLookAt, 1.0f);
+	vmath::vec4 rotRight = vmath::vec4(mRight, 1.0f);
 	rotLook = rotLook*thisRot;
+	rotRight = rotRight*thisRot;
 	mLookAt =  vmath::vec3(rotLook[0],rotLook[1],rotLook[2]);
+	mRight =  vmath::vec3(rotRight[0],rotRight[1],rotRight[2]);
+//	vmath::mat4 thisRot2 = vmath::rotate(degree, mUp);
+//	mRot =  thisRot2 * mRot;
+//	vmath::vec4 rotLook2 = vmath::vec4(mUp, 1.0f);
+//	rotLook2 = rotLook2*thisRot2;
+//	mLookAt =  vmath::vec3(rotLook[0],rotLook[1],rotLook[2]);
+
+	//mRight = (vmath::cross(mUp, mLookAt));
 	Renormalize();
 	UpdateMatrix();
 }
@@ -158,7 +171,7 @@ void Camera::UpdateMatrix()
 {
 	mProj = vmath::perspective(mFOV, mAspectRatio, mNearPlane, mFarPlane);
 
-	vmath::vec3 viewZ = mLookAt-mPosition;
+	vmath::vec3 viewZ = mLookAt;
 	viewZ = vmath::normalize(viewZ);
 	vmath::vec3 viewX = vmath::cross(viewZ, mUp);
 	viewX = vmath::normalize(viewX);
@@ -180,7 +193,7 @@ void Camera::UpdateMatrix()
 
 	vmath::mat4 translation = vmath::translate(mPosition);
 	mMView = vmath::mat4::identity();
-	mMView = vmath::lookat(mLookAt-mPosition, mCenter, mUp);
+	mMView = vmath::lookat(mLookAt, mCenter, mUp);
 	mMView = mRot*translation*mMView;
 
 }
@@ -193,7 +206,7 @@ vmath::mat4 Camera::GetProjectionMatrix() const
 
 void Camera::Renormalize()
 {
-	mUp = vmath::vec3(0.0f, 1.0f, 0.0f);
+	//mUp = vmath::vec3(0.0f, 1.0f, 0.0f);
 	mLookAt = vmath::normalize(mLookAt);
-	mRight = (vmath::cross(mUp, mLookAt));
+	mRight = vmath::normalize(mRight);
 }
